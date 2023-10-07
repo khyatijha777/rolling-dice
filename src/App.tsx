@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, { PropsWithChildren,  useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import {
   Image,
   ImageSourcePropType,
@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 import DiceOne from "../public/one.png"
 import DiceTwo from "../public/two.png"
@@ -26,9 +27,15 @@ type DiceProps = PropsWithChildren<{
   imageUrl: ImageSourcePropType;
 }>
 
-const chooseRandomImage = ():ImageSourcePropType => {
-  const chosenNumber = Math.floor((Math.ceil(Math.random() * 6) + Math.ceil(Math.random() * 6))/2)
-  
+// Optional configuration
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
+
+const chooseRandomImage = (): ImageSourcePropType => {
+  const chosenNumber = Math.floor((Math.ceil(Math.random() * 6) + Math.ceil(Math.random() * 6)) / 2)
+
   switch (chosenNumber) {
     case 1:
       return DiceOne
@@ -63,7 +70,11 @@ function App(): JSX.Element {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setDiceImage(chooseRandomImage())}>
+      <TouchableOpacity onPress={() => {
+        ReactNativeHapticFeedback.trigger("impactHeavy", options);
+        setDiceImage(chooseRandomImage())
+      }
+      }>
         <Dice imageUrl={diceImage} />
       </TouchableOpacity>
     </View>
@@ -75,10 +86,10 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
   },
-  container:{
-    justifyContent:"center",
-    alignItems:"center",
-    height:"100%"
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%"
   }
 })
 
